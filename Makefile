@@ -2,7 +2,7 @@ GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 DEP=dep
-BINARY_NAME=dht-exporter
+BINARY_NAME=dht-prometheus-exporter
 BINARY_DEST=/usr/bin
 
 all:

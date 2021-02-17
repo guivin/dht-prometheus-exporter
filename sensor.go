@@ -55,7 +55,7 @@ func (s *Sensor) readRetry() (humidity float64, temperature float64, err error) 
 	if err != nil {
 		lg.Error("Cannot retrieve humidity and temperature from the sensor: ", err)
 	}
-	lg.Info(fmt.Sprintf("Retrieved humidity=%f, temperature=%f°%s from the sensor",
+	lg.Info(fmt.Sprintf("Retrieved humidity=%.2f%%, temperature=%.2f°%s from the sensor",
 		humidity, temperature, s.temperatureSymbol))
 	return humidity, temperature, err
 }

@@ -19,10 +19,10 @@ func ReadConfig() *Config {
 	/**
 	Reads YAML configuration file and create a struct containing the values
 	**/
-	viper.SetConfigName("config")
+	viper.SetConfigName("dht-prometheus-exporter")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("/etc/dht-prometheus-exporter")
-	viper.AddConfigPath("$HOME/dht-prometheus-exporter")
+	viper.AddConfigPath("/etc")
+	viper.AddConfigPath("$HOME")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 

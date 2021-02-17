@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/coreos/go-systemd/daemon"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
@@ -26,6 +25,4 @@ func main() {
 	}))
 	lg.Info(fmt.Sprintf("Starting http server on TCP/%d port", config.listenPort))
 	lg.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.listenPort), nil))
-	daemon.SdNotify(false, daemon.SdNotifyReady)
-
 }
