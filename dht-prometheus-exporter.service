@@ -1,0 +1,16 @@
+[Unit]
+Description=A Prometheus exporter for DHT22/AM2302 sensor
+Documentation=https://github.com/guivin/dht-prometheus-exporter
+After=network.target local-fs.target
+
+[Service]
+ExecStart=/usr/bin/dht-prometheus-exporter
+User=dht-prometheus-exporter
+Group=gpio
+Type=notify
+Delegate=yes
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

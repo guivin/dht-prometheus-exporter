@@ -1,0 +1,7 @@
+---
+name: test
+gpio_pin: 2
+max_retries: 10
+listenPort: 8080
+log_level: DEBUG
+temperature_unit: celsius
