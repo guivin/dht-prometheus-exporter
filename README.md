@@ -41,7 +41,7 @@ $ useradd --user-group --groups gpio --no-create-home --system --shell /usr/sbin
 
 Copy the configuration file and adapt if needed:
 ```
-$ cp config.yml /etc/dht-prometheus-exporter.yml
+$ cp dht-prometheus-exporter.yml /etc/dht-prometheus-exporter.yml
 $ sudo chown dht-prometheus-exporter:dht-prometheus-exporter /etc/dht-prometheus-exporter.yml
 $ sudo chmod 0640 /etc/dht-prometheus-exporter.yml
 ```
