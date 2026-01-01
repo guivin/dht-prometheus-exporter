@@ -1,0 +1,7 @@
+---
+name: test-sensor
+gpio_pin: 4
+max_retries: 5
+listen_port: 9999
+log_level: info
+temperature_unit: celsius
