@@ -1,4 +1,51 @@
-*.iml
-.idea
-*.lock
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+dht-prometheus-exporter
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+coverage.out
+coverage.html
+*.coverprofile
+
+# Dependency directories
 vendor/
+
+# Go workspace file
+go.work
+
+# IDE - IntelliJ IDEA
+*.iml
+.idea/
+
+# IDE - VSCode
+.vscode/
+
+# IDE - Vim
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Claude Code
+.claude/
+*.claude.md
+
+# Temporary files
+*.tmp
+*.log
+*.lock

@@ -1,28 +1,41 @@
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
-DEP=dep
+GOTEST=$(GOCMD) test
 BINARY_NAME=dht-prometheus-exporter
 BINARY_DEST=/usr/bin
+BUILD_DIR=./cmd/dht-prometheus-exporter
 
-all:
-	make dep
-	make build
-	make install
-	make clean
+.PHONY: all
+all: test build
 
+.PHONY: build
 build:
-	$(GOBUILD) -o ${BINARY_NAME} -v
+	$(GOBUILD) -o $(BINARY_NAME) -v $(BUILD_DIR)
 
+.PHONY: test
+test:
+	$(GOTEST) -v -race -cover ./...
+
+.PHONY: test-coverage
+test-coverage:
+	$(GOTEST) -v -race -coverprofile=coverage.out ./...
+	$(GOCMD) tool cover -html=coverage.out -o coverage.html
+
+.PHONY: clean
 clean:
-	${GOCLEAN}
-	rm -f ${BINARY_NAME}
+	$(GOCLEAN)
+	rm -f $(BINARY_NAME)
+	rm -f coverage.out coverage.html
 
-install:
-	sudo cp -f ${BINARY_NAME} ${BINARY_DEST}
+.PHONY: install
+install: build
+	sudo cp -f $(BINARY_NAME) $(BINARY_DEST)
 
+.PHONY: uninstall
 uninstall:
-	sudo rm -f ${BINARY_DEST}/${BINARY_NAME}
+	sudo rm -f $(BINARY_DEST)/$(BINARY_NAME)
 
-dep:
-	${DEP} ensure -v
+.PHONY: mod-tidy
+mod-tidy:
+	$(GOCMD) mod tidy
