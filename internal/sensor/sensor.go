@@ -25,24 +25,29 @@ type Reader interface {
 
 	// TemperatureUnit returns the temperature unit symbol ("C" or "F").
 	TemperatureUnit() string
+
+	// Name returns the sensor name.
+	Name() string
 }
 
 // DHT22Sensor implements the Reader interface for DHT22/AM2302 sensors.
 type DHT22Sensor struct {
-	config            *config.Config
+	name              string
+	maxRetries        int
 	temperatureSymbol string
 	client            *dht.DHT
 	logger            *log.Logger
 }
 
+// HostInit initializes the DHT host. Must be called once before creating sensors.
+func HostInit() error {
+	return dht.HostInit()
+}
+
 // New creates a new DHT22 sensor reader.
 // Returns an error if the sensor cannot be initialized.
-func New(cfg *config.Config, logger *log.Logger) (*DHT22Sensor, error) {
-	logger.Info("Initializing DHT22/AM2302 sensor on the host")
-
-	if err := dht.HostInit(); err != nil {
-		return nil, fmt.Errorf("failed to initialize DHT22/AM2302 sensor on host: %w", err)
-	}
+func New(cfg *config.SensorConfig, logger *log.Logger) (*DHT22Sensor, error) {
+	logger.Infof("Initializing DHT22/AM2302 sensor '%s' on %s", cfg.Name, cfg.GPIO)
 
 	var client *dht.DHT
 	var temperatureSymbol string
@@ -57,11 +62,12 @@ func New(cfg *config.Config, logger *log.Logger) (*DHT22Sensor, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to create DHT client: %w", err)
+		return nil, fmt.Errorf("failed to create DHT client for sensor '%s': %w", cfg.Name, err)
 	}
 
 	return &DHT22Sensor{
-		config:            cfg,
+		name:              cfg.Name,
+		maxRetries:        cfg.MaxRetries,
 		temperatureSymbol: temperatureSymbol,
 		client:            client,
 		logger:            logger,
@@ -71,14 +77,14 @@ func New(cfg *config.Config, logger *log.Logger) (*DHT22Sensor, error) {
 // ReadData reads humidity and temperature from the sensor with retry logic.
 // Returns an error if all retry attempts fail.
 func (s *DHT22Sensor) ReadData() (humidity, temperature float64, err error) {
-	humidity, temperature, err = s.client.ReadRetry(s.config.MaxRetries)
+	humidity, temperature, err = s.client.ReadRetry(s.maxRetries)
 	if err != nil {
-		s.logger.Error("Cannot retrieve humidity and temperature from sensor: ", err)
+		s.logger.Errorf("Cannot retrieve humidity and temperature from sensor '%s': %v", s.name, err)
 		return 0, 0, err
 	}
 
-	s.logger.Infof("Retrieved humidity=%.2f%%, temperature=%.2f°%s from sensor",
-		humidity, temperature, s.temperatureSymbol)
+	s.logger.Infof("Retrieved humidity=%.2f%%, temperature=%.2f°%s from sensor '%s'",
+		humidity, temperature, s.temperatureSymbol, s.name)
 
 	return humidity, temperature, nil
 }
@@ -86,4 +92,9 @@ func (s *DHT22Sensor) ReadData() (humidity, temperature float64, err error) {
 // TemperatureUnit returns the temperature unit symbol for this sensor.
 func (s *DHT22Sensor) TemperatureUnit() string {
 	return s.temperatureSymbol
+}
+
+// Name returns the sensor name.
+func (s *DHT22Sensor) Name() string {
+	return s.name
 }

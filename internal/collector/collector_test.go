@@ -12,6 +12,7 @@ import (
 
 // mockSensor is a mock implementation of sensor.Reader for testing
 type mockSensor struct {
+	name        string
 	humidity    float64
 	temperature float64
 	err         error
@@ -26,6 +27,10 @@ func (m *mockSensor) TemperatureUnit() string {
 	return m.unit
 }
 
+func (m *mockSensor) Name() string {
+	return m.name
+}
+
 // getSilentLogger returns a logger that doesn't output anything
 func getSilentLogger() *log.Logger {
 	logger := log.New()
@@ -35,24 +40,16 @@ func getSilentLogger() *log.Logger {
 
 func TestNew(t *testing.T) {
 	logger := getSilentLogger()
-	mock := &mockSensor{unit: "C"}
+	mock := &mockSensor{name: "test-sensor", unit: "C"}
 
-	collector := New(mock, "test-sensor", logger)
+	collector := New(mock, logger)
 
 	if collector == nil {
 		t.Fatal("New() returned nil collector")
 	}
 
-	if collector.sensor != mock {
-		t.Error("Collector.sensor not set correctly")
-	}
-
 	if collector.logger != logger {
 		t.Error("Collector.logger not set correctly")
-	}
-
-	if collector.dhtName != "test-sensor" {
-		t.Errorf("Collector.dhtName = %q, want %q", collector.dhtName, "test-sensor")
 	}
 
 	// Hostname should be set (even if empty on error)
@@ -62,8 +59,8 @@ func TestNew(t *testing.T) {
 
 func TestDescribe(t *testing.T) {
 	logger := getSilentLogger()
-	mock := &mockSensor{unit: "C"}
-	collector := New(mock, "test-sensor", logger)
+	mock := &mockSensor{name: "test-sensor", unit: "C"}
+	collector := New(mock, logger)
 
 	ch := make(chan *prometheus.Desc, 10)
 	collector.Describe(ch)
@@ -83,13 +80,14 @@ func TestDescribe(t *testing.T) {
 func TestCollect_Success(t *testing.T) {
 	logger := getSilentLogger()
 	mock := &mockSensor{
+		name:        "test-sensor",
 		humidity:    65.5,
 		temperature: 22.3,
 		err:         nil,
 		unit:        "C",
 	}
 
-	collector := New(mock, "test-sensor", logger)
+	collector := New(mock, logger)
 
 	ch := make(chan prometheus.Metric, 10)
 	collector.Collect(ch)
@@ -110,10 +108,11 @@ func TestCollect_Success(t *testing.T) {
 func TestCollect_SensorError(t *testing.T) {
 	logger := getSilentLogger()
 	mock := &mockSensor{
-		err: errors.New("sensor read failed"),
+		name: "test-sensor",
+		err:  errors.New("sensor read failed"),
 	}
 
-	collector := New(mock, "test-sensor", logger)
+	collector := New(mock, logger)
 
 	ch := make(chan prometheus.Metric, 10)
 	collector.Collect(ch)
@@ -134,12 +133,13 @@ func TestCollect_SensorError(t *testing.T) {
 func TestCollect_MetricType(t *testing.T) {
 	logger := getSilentLogger()
 	mock := &mockSensor{
+		name:        "test-sensor",
 		humidity:    60.0,
 		temperature: 25.0,
 		unit:        "C",
 	}
 
-	collector := New(mock, "test-sensor", logger)
+	collector := New(mock, logger)
 
 	ch := make(chan prometheus.Metric, 10)
 	collector.Collect(ch)
@@ -182,12 +182,13 @@ func TestCollect_MetricValues(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mock := &mockSensor{
+				name:        "test-sensor",
 				humidity:    tt.humidity,
 				temperature: tt.temperature,
 				unit:        tt.unit,
 			}
 
-			collector := New(mock, "test-sensor", logger)
+			collector := New(mock, logger)
 
 			ch := make(chan prometheus.Metric, 10)
 			collector.Collect(ch)
@@ -225,14 +226,15 @@ func TestCollect_MetricValues(t *testing.T) {
 // TestCollect_MetricLabels verifies metric labels are set correctly
 func TestCollect_MetricLabels(t *testing.T) {
 	logger := getSilentLogger()
+	dhtName := "my-sensor"
 	mock := &mockSensor{
+		name:        dhtName,
 		humidity:    60.0,
 		temperature: 20.0,
 		unit:        "C",
 	}
 
-	dhtName := "my-sensor"
-	collector := New(mock, dhtName, logger)
+	collector := New(mock, logger)
 
 	ch := make(chan prometheus.Metric, 10)
 	collector.Collect(ch)

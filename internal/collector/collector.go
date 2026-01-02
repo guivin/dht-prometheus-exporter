@@ -14,15 +14,14 @@ type Collector struct {
 	sensor            sensor.Reader
 	logger            *log.Logger
 	hostname          string
-	dhtName           string
 	temperatureMetric *prometheus.Desc
 	humidityMetric    *prometheus.Desc
 }
 
 // New creates a new Collector for the given sensor.
 // The hostname is retrieved once during initialization to avoid repeated lookups.
-func New(s sensor.Reader, dhtName string, logger *log.Logger) *Collector {
-	logger.Debug("Creating new prometheus collector for sensor")
+func New(s sensor.Reader, logger *log.Logger) *Collector {
+	logger.Debugf("Creating new prometheus collector for sensor '%s'", s.Name())
 
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -34,7 +33,6 @@ func New(s sensor.Reader, dhtName string, logger *log.Logger) *Collector {
 		sensor:   s,
 		logger:   logger,
 		hostname: hostname,
-		dhtName:  dhtName,
 		temperatureMetric: prometheus.NewDesc(
 			"dht_temperature_degree",
 			"Temperature degree measured by the sensor",
@@ -75,7 +73,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		c.temperatureMetric,
 		prometheus.GaugeValue, // Changed from CounterValue
 		temperature,
-		c.dhtName,
+		c.sensor.Name(),
 		c.hostname,
 		temperatureUnit,
 	)
@@ -84,7 +82,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		c.humidityMetric,
 		prometheus.GaugeValue, // Changed from CounterValue
 		humidity,
-		c.dhtName,
+		c.sensor.Name(),
 		c.hostname,
 	)
 }
