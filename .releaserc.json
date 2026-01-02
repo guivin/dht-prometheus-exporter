@@ -1,0 +1,40 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "echo ${nextRelease.version} > VERSION"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md", "VERSION"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "dist/dht-prometheus-exporter-linux-arm",
+            "label": "dht-prometheus-exporter-linux-arm (Raspberry Pi)"
+          },
+          {
+            "path": "dist/dht-prometheus-exporter-linux-arm64",
+            "label": "dht-prometheus-exporter-linux-arm64 (Raspberry Pi 4 64-bit)"
+          },
+          {
+            "path": "dist/dht-prometheus-exporter-linux-amd64",
+            "label": "dht-prometheus-exporter-linux-amd64"
+          }
+        ]
+      }
+    ]
+  ]
+}
