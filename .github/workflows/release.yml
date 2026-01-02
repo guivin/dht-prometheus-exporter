@@ -56,9 +56,11 @@ jobs:
       - name: Build binaries for multiple architectures
         run: |
           mkdir -p dist
-          # Linux ARM (Raspberry Pi)
-          GOOS=linux GOARCH=arm GOARM=7 go build -o dist/dht-prometheus-exporter-linux-arm ./cmd/dht-prometheus-exporter
-          # Linux ARM64 (Raspberry Pi 4 64-bit)
+          # Linux ARMv6 (Raspberry Pi 1, Pi Zero, Pi Zero W)
+          GOOS=linux GOARCH=arm GOARM=6 go build -o dist/dht-prometheus-exporter-linux-armv6 ./cmd/dht-prometheus-exporter
+          # Linux ARMv7 (Raspberry Pi 2, Pi 3, Pi 4 32-bit)
+          GOOS=linux GOARCH=arm GOARM=7 go build -o dist/dht-prometheus-exporter-linux-armv7 ./cmd/dht-prometheus-exporter
+          # Linux ARM64 (Raspberry Pi 3, Pi 4, Pi 5 64-bit)
           GOOS=linux GOARCH=arm64 go build -o dist/dht-prometheus-exporter-linux-arm64 ./cmd/dht-prometheus-exporter
           # Linux AMD64
           GOOS=linux GOARCH=amd64 go build -o dist/dht-prometheus-exporter-linux-amd64 ./cmd/dht-prometheus-exporter
