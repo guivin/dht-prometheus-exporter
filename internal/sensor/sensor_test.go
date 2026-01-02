@@ -13,6 +13,7 @@ import (
 // mockSensor is a mock implementation of the Reader interface for testing
 type mockSensor struct {
 	name        string
+	gpio        string
 	humidity    float64
 	temperature float64
 	err         error
@@ -29,6 +30,10 @@ func (m *mockSensor) TemperatureUnit() string {
 
 func (m *mockSensor) Name() string {
 	return m.name
+}
+
+func (m *mockSensor) GPIO() string {
+	return m.gpio
 }
 
 // TestMockSensor verifies that our mock implements the Reader interface

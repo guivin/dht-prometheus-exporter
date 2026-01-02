@@ -36,12 +36,12 @@ func New(s sensor.Reader, logger *log.Logger) *Collector {
 		temperatureMetric: prometheus.NewDesc(
 			"dht_temperature_degree",
 			"Temperature degree measured by the sensor",
-			[]string{"dht_name", "hostname", "unit"}, nil,
+			[]string{"dht_name", "hostname", "gpio", "unit"}, nil,
 		),
 		humidityMetric: prometheus.NewDesc(
 			"dht_humidity_percent",
 			"Humidity percent measured by the sensor",
-			[]string{"dht_name", "hostname"}, nil,
+			[]string{"dht_name", "hostname", "gpio"}, nil,
 		),
 	}
 }
@@ -75,6 +75,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		temperature,
 		c.sensor.Name(),
 		c.hostname,
+		c.sensor.GPIO(),
 		temperatureUnit,
 	)
 
@@ -84,5 +85,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		humidity,
 		c.sensor.Name(),
 		c.hostname,
+		c.sensor.GPIO(),
 	)
 }

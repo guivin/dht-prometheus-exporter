@@ -28,11 +28,15 @@ type Reader interface {
 
 	// Name returns the sensor name.
 	Name() string
+
+	// GPIO returns the GPIO pin identifier (e.g., "GPIO4").
+	GPIO() string
 }
 
 // DHT22Sensor implements the Reader interface for DHT22/AM2302 sensors.
 type DHT22Sensor struct {
 	name              string
+	gpio              string
 	maxRetries        int
 	temperatureSymbol string
 	client            *dht.DHT
@@ -67,6 +71,7 @@ func New(cfg *config.SensorConfig, logger *log.Logger) (*DHT22Sensor, error) {
 
 	return &DHT22Sensor{
 		name:              cfg.Name,
+		gpio:              cfg.GPIO,
 		maxRetries:        cfg.MaxRetries,
 		temperatureSymbol: temperatureSymbol,
 		client:            client,
@@ -97,4 +102,9 @@ func (s *DHT22Sensor) TemperatureUnit() string {
 // Name returns the sensor name.
 func (s *DHT22Sensor) Name() string {
 	return s.name
+}
+
+// GPIO returns the GPIO pin identifier.
+func (s *DHT22Sensor) GPIO() string {
+	return s.gpio
 }

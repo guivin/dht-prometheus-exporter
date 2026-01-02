@@ -13,6 +13,7 @@ import (
 // mockSensor is a mock implementation of sensor.Reader for testing
 type mockSensor struct {
 	name        string
+	gpio        string
 	humidity    float64
 	temperature float64
 	err         error
@@ -29,6 +30,10 @@ func (m *mockSensor) TemperatureUnit() string {
 
 func (m *mockSensor) Name() string {
 	return m.name
+}
+
+func (m *mockSensor) GPIO() string {
+	return m.gpio
 }
 
 // getSilentLogger returns a logger that doesn't output anything
