@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.2.1...v1.3.0) (2026-01-02)
+
+
+### Features
+
+* add graceful shutdown, health endpoints, and golangci-lint ([81e48d5](https://github.com/guivin/dht-prometheus-exporter/commit/81e48d574a66d26e63b7aec8420ae84c5efa36db))
+
 ## [1.2.1](https://github.com/guivin/dht-prometheus-exporter/compare/v1.2.0...v1.2.1) (2026-01-02)
 
 
