@@ -1,7 +1,18 @@
 ---
-name: test
-gpio_pin: 2
-max_retries: 10
+# Configuration for multiple DHT22/AM2302 sensors
+sensors:
+  # First sensor example
+  - name: living-room
+    gpio_pin: 2
+    max_retries: 10
+    temperature_unit: celsius
+
+  # Second sensor example (optional - remove if using single sensor)
+  - name: bedroom
+    gpio_pin: 17
+    max_retries: 10
+    temperature_unit: celsius
+
+# Global settings
 listen_port: 8080
-log_level: DEBUG
-temperature_unit: fahrenheit
+log_level: info

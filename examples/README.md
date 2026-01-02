@@ -10,12 +10,17 @@ Example configuration file for the exporter. Copy this to `/etc/dht-prometheus-e
 
 **Configuration options:**
 
+**Sensor configuration (per sensor):**
+
 - `name`: Sensor name used in Prometheus metrics labels
 - `gpio_pin`: GPIO pin number where the DHT22/AM2302 sensor is connected (e.g., 2, 4, 17)
 - `max_retries`: Number of retry attempts when reading from the sensor (recommended: 10)
+- `temperature_unit`: Temperature unit - either `celsius` or `fahrenheit`
+
+**Global configuration:**
+
 - `listen_port`: HTTP port for the metrics endpoint (default: 8080)
 - `log_level`: Logging verbosity - one of: debug, info, warn, error, fatal, panic
-- `temperature_unit`: Temperature unit - either `celsius` or `fahrenheit`
 
 **Example usage:**
 

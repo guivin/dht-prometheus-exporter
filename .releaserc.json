@@ -22,12 +22,16 @@
       {
         "assets": [
           {
-            "path": "dist/dht-prometheus-exporter-linux-arm",
-            "label": "dht-prometheus-exporter-linux-arm (Raspberry Pi)"
+            "path": "dist/dht-prometheus-exporter-linux-armv6",
+            "label": "dht-prometheus-exporter-linux-armv6 (Raspberry Pi 1, Pi Zero, Pi Zero W)"
+          },
+          {
+            "path": "dist/dht-prometheus-exporter-linux-armv7",
+            "label": "dht-prometheus-exporter-linux-armv7 (Raspberry Pi 2, Pi 3, Pi 4 32-bit)"
           },
           {
             "path": "dist/dht-prometheus-exporter-linux-arm64",
-            "label": "dht-prometheus-exporter-linux-arm64 (Raspberry Pi 4 64-bit)"
+            "label": "dht-prometheus-exporter-linux-arm64 (Raspberry Pi 3, Pi 4, Pi 5 64-bit)"
           },
           {
             "path": "dist/dht-prometheus-exporter-linux-amd64",
