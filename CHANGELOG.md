@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.1.0...v1.2.0) (2026-01-02)
+
+
+### Features
+
+* add gpio pin in metric labels ([778a93f](https://github.com/guivin/dht-prometheus-exporter/commit/778a93f756b4094986a8197c144979b47e5ae368))
+
 # [1.1.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.0.0...v1.1.0) (2026-01-02)
 
 
