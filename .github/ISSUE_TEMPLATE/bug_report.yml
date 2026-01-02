@@ -1,0 +1,99 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug
+      placeholder: Describe what happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: I expected...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Configure sensor with...
+        2. Start the exporter...
+        3. See error...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: raspberry-pi
+    attributes:
+      label: Raspberry Pi Model
+      options:
+        - Raspberry Pi 1
+        - Raspberry Pi Zero / Zero W
+        - Raspberry Pi 2
+        - Raspberry Pi 3
+        - Raspberry Pi 4
+        - Raspberry Pi 5
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: OS and version (e.g., Raspberry Pi OS Bookworm 64-bit)
+      placeholder: Raspberry Pi OS Bookworm 64-bit
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Exporter Version
+      description: Version of dht-prometheus-exporter
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Your config file (remove sensitive data if any)
+      render: yaml
+      placeholder: |
+        sensors:
+          - name: my-sensor
+            gpio_pin: 4
+            max_retries: 10
+            temperature_unit: celsius
+        listen_port: 8080
+        log_level: info
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant log output (use `journalctl -u dht-prometheus-exporter`)
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
