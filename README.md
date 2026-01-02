@@ -6,6 +6,10 @@
 [![GitHub release](https://img.shields.io/github/release/guivin/dht-prometheus-exporter.svg)](https://github.com/guivin/dht-prometheus-exporter/releases)
 [![GitHub issues](https://img.shields.io/github/issues/guivin/dht-prometheus-exporter)](https://github.com/guivin/dht-prometheus-exporter/issues)
 
+<p align="center">
+  <img src="assets/raspberry-dht22.jpeg" alt="Raspberry Pi with DHT22 Sensor" height="200">
+</p>
+
 > A Prometheus exporter for DHT22/AM2302 temperature and humidity sensors designed for Raspberry Pi
 
 This repository contains a production-ready Prometheus exporter for the DHT22/AM2302 temperature and humidity sensors, optimized
