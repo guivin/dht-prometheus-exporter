@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/guivin/dht-prometheus-exporter/compare/v1.2.0...v1.2.1) (2026-01-02)
+
+
+### Bug Fixes
+
+* add missing artifacts in semantic-release and update examples ([2fe1fea](https://github.com/guivin/dht-prometheus-exporter/commit/2fe1fea7d8145dd1092a1bf7235ad8536b8ee1ad))
+
 # [1.2.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.1.0...v1.2.0) (2026-01-02)
 
 
