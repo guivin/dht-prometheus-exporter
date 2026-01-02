@@ -37,8 +37,8 @@ func TestParseLevel_ValidLevels(t *testing.T) {
 func TestParseLevel_InvalidLevel(t *testing.T) {
 	tests := []string{
 		"invalid",
-		"DEBUG",  // Case sensitive
-		"INFO",   // Case sensitive
+		"DEBUG",   // Case sensitive
+		"INFO",    // Case sensitive
 		"warning", // Should be "warn"
 		"",
 		"trace",

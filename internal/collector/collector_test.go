@@ -159,7 +159,7 @@ func TestCollect_MetricType(t *testing.T) {
 
 		// CRITICAL: Verify metric type is GAUGE, not COUNTER
 		if dtoMetric.GetGauge() == nil {
-			t.Errorf("Metric is not a Gauge type (got %+v)", dtoMetric)
+			t.Error("Metric is not a Gauge type")
 		}
 
 		// Verify counter is NOT set (it should be nil for gauges)
