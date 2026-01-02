@@ -1,0 +1,51 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gosimple
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+    - bodyclose
+    - noctx
+    - gosec
+    - prealloc
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    exclude-functions:
+      - (io.Closer).Close
+      - (net/http.ResponseWriter).Write
+  govet:
+    disable:
+      - fieldalignment
+      - shadow
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/guivin/dht-prometheus-exporter
+  misspell:
+    locale: US
+  gosec:
+    excludes:
+      - G104 # Duplicates errcheck
+      - G306 # Weak file permissions - acceptable for config files
+      - G304 # File path from variable - acceptable in tests
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
