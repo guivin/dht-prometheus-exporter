@@ -58,16 +58,25 @@ func TestLoad_ValidConfig(t *testing.T) {
 	}
 
 	// Verify config values match test-config.yml
-	if config.Name != "test-sensor" {
-		t.Errorf("Config.Name = %q, want %q", config.Name, "test-sensor")
+	if len(config.Sensors) != 1 {
+		t.Fatalf("Config.Sensors length = %d, want 1", len(config.Sensors))
 	}
 
-	if config.GPIO != "GPIO4" {
-		t.Errorf("Config.GPIO = %q, want %q", config.GPIO, "GPIO4")
+	sensor := config.Sensors[0]
+	if sensor.Name != "test-sensor" {
+		t.Errorf("Sensor.Name = %q, want %q", sensor.Name, "test-sensor")
 	}
 
-	if config.MaxRetries != 5 {
-		t.Errorf("Config.MaxRetries = %d, want %d", config.MaxRetries, 5)
+	if sensor.GPIO != "GPIO4" {
+		t.Errorf("Sensor.GPIO = %q, want %q", sensor.GPIO, "GPIO4")
+	}
+
+	if sensor.MaxRetries != 5 {
+		t.Errorf("Sensor.MaxRetries = %d, want %d", sensor.MaxRetries, 5)
+	}
+
+	if sensor.TemperatureUnit != "celsius" {
+		t.Errorf("Sensor.TemperatureUnit = %q, want %q", sensor.TemperatureUnit, "celsius")
 	}
 
 	if config.ListenPort != 9999 {
@@ -76,10 +85,6 @@ func TestLoad_ValidConfig(t *testing.T) {
 
 	if config.LogLevel != "info" {
 		t.Errorf("Config.LogLevel = %q, want %q", config.LogLevel, "info")
-	}
-
-	if config.TemperatureUnit != "celsius" {
-		t.Errorf("Config.TemperatureUnit = %q, want %q", config.TemperatureUnit, "celsius")
 	}
 }
 
@@ -131,12 +136,13 @@ func TestLoad_GPIOPinFormatting(t *testing.T) {
 
 	// Create a test config with a specific GPIO pin
 	configContent := []byte(`---
-name: test
-gpio_pin: 17
-max_retries: 10
+sensors:
+  - name: test
+    gpio_pin: 17
+    max_retries: 10
+    temperature_unit: celsius
 listen_port: 8080
 log_level: info
-temperature_unit: celsius
 `)
 	configPath := filepath.Join(tempDir, "dht-prometheus-exporter.yml")
 	if err := os.WriteFile(configPath, configContent, 0644); err != nil {
@@ -152,10 +158,14 @@ temperature_unit: celsius
 		t.Fatalf("Load() returned unexpected error: %v", err)
 	}
 
+	if len(config.Sensors) != 1 {
+		t.Fatalf("Config.Sensors length = %d, want 1", len(config.Sensors))
+	}
+
 	// Verify GPIO pin is formatted with "GPIO" prefix
 	expectedGPIO := "GPIO17"
-	if config.GPIO != expectedGPIO {
-		t.Errorf("Config.GPIO = %q, want %q", config.GPIO, expectedGPIO)
+	if config.Sensors[0].GPIO != expectedGPIO {
+		t.Errorf("Sensor.GPIO = %q, want %q", config.Sensors[0].GPIO, expectedGPIO)
 	}
 }
 

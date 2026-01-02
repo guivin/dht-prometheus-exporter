@@ -36,20 +36,29 @@ func run() error {
 		lg.Warnf("Failed to create logger with level %q, using info level: %v", cfg.LogLevel, err)
 	}
 
-	// Initialize sensor
-	sensorReader, err := sensor.New(cfg, lg)
-	if err != nil {
-		return fmt.Errorf("failed to initialize sensor: %w", err)
+	// Initialize DHT host (required before creating sensors)
+	lg.Info("Initializing DHT22/AM2302 host")
+	if err := sensor.HostInit(); err != nil {
+		return fmt.Errorf("failed to initialize DHT host: %w", err)
 	}
 
-	// Create collector
-	coll := collector.New(sensorReader, cfg.Name, lg)
+	// Initialize sensors and collectors
+	for i := range cfg.Sensors {
+		sensorCfg := &cfg.Sensors[i]
+		sensorReader, err := sensor.New(sensorCfg, lg)
+		if err != nil {
+			return fmt.Errorf("failed to initialize sensor '%s': %w", sensorCfg.Name, err)
+		}
 
-	// Register collector with Prometheus
-	lg.Debug("Registering prometheus collector")
-	if err := prometheus.Register(coll); err != nil {
-		return fmt.Errorf("failed to register collector: %w", err)
+		// Create and register collector
+		coll := collector.New(sensorReader, lg)
+		lg.Debugf("Registering prometheus collector for sensor '%s'", sensorCfg.Name)
+		if err := prometheus.Register(coll); err != nil {
+			return fmt.Errorf("failed to register collector for sensor '%s': %w", sensorCfg.Name, err)
+		}
 	}
+
+	lg.Infof("Initialized %d sensor(s)", len(cfg.Sensors))
 
 	// Set up HTTP server
 	w := lg.Writer()

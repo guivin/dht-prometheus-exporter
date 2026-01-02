@@ -12,6 +12,7 @@ import (
 
 // mockSensor is a mock implementation of the Reader interface for testing
 type mockSensor struct {
+	name        string
 	humidity    float64
 	temperature float64
 	err         error
@@ -24,6 +25,10 @@ func (m *mockSensor) ReadData() (float64, float64, error) {
 
 func (m *mockSensor) TemperatureUnit() string {
 	return m.unit
+}
+
+func (m *mockSensor) Name() string {
+	return m.name
 }
 
 // TestMockSensor verifies that our mock implements the Reader interface
@@ -123,12 +128,10 @@ func TestNew_TemperatureUnitLogic(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg := &config.Config{
+			cfg := &config.SensorConfig{
 				Name:            "test-sensor",
 				GPIO:            "GPIO4",
 				MaxRetries:      5,
-				ListenPort:      8080,
-				LogLevel:        "info",
 				TemperatureUnit: tt.tempUnit,
 			}
 
@@ -167,6 +170,7 @@ func ExampleReader() {
 	// In tests, this can be a mockSensor
 
 	var sensor Reader = &mockSensor{
+		name:        "example-sensor",
 		humidity:    60.0,
 		temperature: 23.5,
 		unit:        "C",
@@ -177,5 +181,6 @@ func ExampleReader() {
 		_ = humidity    // Use humidity
 		_ = temperature // Use temperature
 		_ = sensor.TemperatureUnit()
+		_ = sensor.Name()
 	}
 }
