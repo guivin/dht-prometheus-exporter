@@ -51,7 +51,10 @@ func HostInit() error {
 // New creates a new DHT22 sensor reader.
 // Returns an error if the sensor cannot be initialized.
 func New(cfg *config.SensorConfig, logger *log.Logger) (*DHT22Sensor, error) {
-	logger.Infof("Initializing DHT22/AM2302 sensor '%s' on %s", cfg.Name, cfg.GPIO)
+	logger.WithFields(log.Fields{
+		"sensor": cfg.Name,
+		"gpio":   cfg.GPIO,
+	}).Info("Initializing DHT22/AM2302 sensor")
 
 	var client *dht.DHT
 	var temperatureSymbol string
@@ -84,12 +87,21 @@ func New(cfg *config.SensorConfig, logger *log.Logger) (*DHT22Sensor, error) {
 func (s *DHT22Sensor) ReadData() (humidity, temperature float64, err error) {
 	humidity, temperature, err = s.client.ReadRetry(s.maxRetries)
 	if err != nil {
-		s.logger.Errorf("Cannot retrieve humidity and temperature from sensor '%s': %v", s.name, err)
+		s.logger.WithFields(log.Fields{
+			"sensor": s.name,
+			"gpio":   s.gpio,
+			"error":  err,
+		}).Error("Failed to read sensor data")
 		return 0, 0, err
 	}
 
-	s.logger.Infof("Retrieved humidity=%.2f%%, temperature=%.2f°%s from sensor '%s'",
-		humidity, temperature, s.temperatureSymbol, s.name)
+	s.logger.WithFields(log.Fields{
+		"sensor":      s.name,
+		"gpio":        s.gpio,
+		"humidity":    humidity,
+		"temperature": temperature,
+		"unit":        s.temperatureSymbol,
+	}).Debug("Sensor data retrieved")
 
 	return humidity, temperature, nil
 }

@@ -14,6 +14,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	logrus "github.com/sirupsen/logrus"
 
 	"github.com/guivin/dht-prometheus-exporter/internal/collector"
 	"github.com/guivin/dht-prometheus-exporter/internal/config"
@@ -39,7 +40,10 @@ func run() error {
 	if err != nil {
 		// If logger creation fails, fall back to a default logger
 		lg, _ = logger.New("info")
-		lg.Warnf("Failed to create logger with level %q, using info level: %v", cfg.LogLevel, err)
+		lg.WithFields(logrus.Fields{
+			"requested_level": cfg.LogLevel,
+			"error":           err,
+		}).Warn("Failed to create logger, using info level")
 	}
 
 	// Initialize DHT host (required before creating sensors)
@@ -58,13 +62,13 @@ func run() error {
 
 		// Create and register collector
 		coll := collector.New(sensorReader, lg)
-		lg.Debugf("Registering prometheus collector for sensor '%s'", sensorCfg.Name)
+		lg.WithField("sensor", sensorCfg.Name).Debug("Registering Prometheus collector")
 		if err := prometheus.Register(coll); err != nil {
 			return fmt.Errorf("failed to register collector for sensor '%s': %w", sensorCfg.Name, err)
 		}
 	}
 
-	lg.Infof("Initialized %d sensor(s)", len(cfg.Sensors))
+	lg.WithField("count", len(cfg.Sensors)).Info("Sensors initialized")
 
 	// Set up HTTP server
 	w := lg.Writer()
@@ -102,19 +106,22 @@ func run() error {
 
 	go func() {
 		<-quit
-		lg.Info("Server is shutting down...")
+		lg.Info("Shutting down server")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
 		server.SetKeepAlivesEnabled(false)
 		if err := server.Shutdown(ctx); err != nil {
-			lg.Errorf("Could not gracefully shutdown the server: %v", err)
+			lg.WithError(err).Error("Failed to gracefully shutdown server")
 		}
 		close(done)
 	}()
 
-	lg.Infof("Starting HTTP server on %s", addr)
+	lg.WithFields(logrus.Fields{
+		"address":   addr,
+		"endpoints": []string{"/metrics", "/health", "/ready"},
+	}).Info("Starting HTTP server")
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return fmt.Errorf("HTTP server error: %w", err)
 	}

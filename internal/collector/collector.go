@@ -21,11 +21,11 @@ type Collector struct {
 // New creates a new Collector for the given sensor.
 // The hostname is retrieved once during initialization to avoid repeated lookups.
 func New(s sensor.Reader, logger *log.Logger) *Collector {
-	logger.Debugf("Creating new prometheus collector for sensor '%s'", s.Name())
+	logger.WithField("sensor", s.Name()).Debug("Creating Prometheus collector")
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		logger.Warnf("Failed to get hostname, using empty string: %v", err)
+		logger.WithError(err).Warn("Failed to get hostname, using empty string")
 		hostname = ""
 	}
 
@@ -58,11 +58,10 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 // CRITICAL FIX: Uses GaugeValue instead of CounterValue (temperature/humidity are gauges, not counters)
 // CRITICAL FIX: Checks and handles sensor read errors instead of ignoring them
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	// CRITICAL FIX: Check the error instead of ignoring it with _
 	humidity, temperature, err := c.sensor.ReadData()
 	if err != nil {
-		c.logger.Errorf("Failed to read sensor data, skipping metric collection: %v", err)
-		return // Don't emit metrics if sensor read failed
+		// Error already logged by sensor.ReadData(), just skip metric collection
+		return
 	}
 
 	temperatureUnit := c.sensor.TemperatureUnit()
