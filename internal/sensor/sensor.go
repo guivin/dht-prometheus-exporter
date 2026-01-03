@@ -101,7 +101,7 @@ func (s *DHT22Sensor) ReadData() (humidity, temperature float64, err error) {
 		"humidity":    humidity,
 		"temperature": temperature,
 		"unit":        s.temperatureSymbol,
-	}).Debug("Sensor data retrieved")
+	}).Info("Sensor data retrieved")
 
 	return humidity, temperature, nil
 }
