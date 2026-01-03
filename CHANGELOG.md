@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.4.0...v1.5.0) (2026-01-03)
+
+
+### Features
+
+* add HTTP request logging with client IP ([5d99286](https://github.com/guivin/dht-prometheus-exporter/commit/5d992869ab67ab53ff53aa339167fe4edbf26398))
+
 # [1.4.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.3.0...v1.4.0) (2026-01-03)
 
 
