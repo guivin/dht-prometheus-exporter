@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.3.0...v1.4.0) (2026-01-03)
+
+
+### Features
+
+* improve logging ([0779c39](https://github.com/guivin/dht-prometheus-exporter/commit/0779c39df8ce23ea5e120d785a59373cd190d71f))
+
 # [1.3.0](https://github.com/guivin/dht-prometheus-exporter/compare/v1.2.1...v1.3.0) (2026-01-02)
 
 
