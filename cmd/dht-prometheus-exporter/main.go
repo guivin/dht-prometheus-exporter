@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	stdlibLog "log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -21,6 +22,47 @@ import (
 	"github.com/guivin/dht-prometheus-exporter/internal/logger"
 	"github.com/guivin/dht-prometheus-exporter/internal/sensor"
 )
+
+// loggingMiddleware logs incoming HTTP requests with client IP
+func loggingMiddleware(lg *logrus.Logger, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		clientIP := getClientIP(r)
+		lg.WithFields(logrus.Fields{
+			"client_ip": clientIP,
+			"method":    r.Method,
+			"path":      r.URL.Path,
+		}).Info("HTTP request received")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// getClientIP extracts the client IP from the request, checking common proxy headers
+func getClientIP(r *http.Request) string {
+	// Check X-Forwarded-For header (may contain multiple IPs)
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		// Take the first IP in the list
+		if idx := len(xff); idx > 0 {
+			for i, c := range xff {
+				if c == ',' {
+					return xff[:i]
+				}
+			}
+			return xff
+		}
+	}
+
+	// Check X-Real-IP header
+	if xri := r.Header.Get("X-Real-IP"); xri != "" {
+		return xri
+	}
+
+	// Fall back to RemoteAddr
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+	return ip
+}
 
 func main() {
 	if err := run(); err != nil {
@@ -93,7 +135,7 @@ func run() error {
 	addr := fmt.Sprintf(":%d", cfg.ListenPort)
 	server := &http.Server{
 		Addr:         addr,
-		Handler:      mux,
+		Handler:      loggingMiddleware(lg, mux),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
