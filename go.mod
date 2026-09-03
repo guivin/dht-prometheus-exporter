@@ -5,7 +5,7 @@ go 1.25.4
 require (
 	github.com/MichaelS11/go-dht v0.1.1
 	github.com/prometheus/client_golang v1.23.2
-	github.com/prometheus/client_model v0.6.2
+	github.com/prometheus/client_model v0.6.3
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/viper v1.21.0
 )
@@ -29,7 +29,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
-	google.golang.org/protobuf v1.36.8 // indirect
+	google.golang.org/protobuf v1.36.12 // indirect
 	periph.io/x/conn/v3 v3.7.2 // indirect
 	periph.io/x/host/v3 v3.8.5 // indirect
 )
